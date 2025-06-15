@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MCQ Quiz</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>MCQ Quiz</h1>
+        <div id="quiz-container">
+            <h2 id="question">Question Text</h2>
+            <div id="options" class="options-container">
+                <button class="option-btn"></button>
+                <button class="option-btn"></button>
+                <button class="option-btn"></button>
+                <button class="option-btn"></button>
+            </div>
+            <p id="feedback" class="feedback-message"></p>
+            <button id="next-btn">Next Question</button>
+        </div>
+        <div id="result-container" style="display:none;">
+            <h2>Quiz Completed!</h2>
+            <p>You scored <span id="score">0</span> out of <span id="total-questions">0</span>.</p>
+            <button id="restart-btn">Restart Quiz</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

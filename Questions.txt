@@ -1,0 +1,10 @@
+What is the capital of France?,Paris,London,Berlin,Rome,Paris
+Which planet is known as the "Red Planet"?,Mars,Jupiter,Venus,Saturn,Mars
+What is the largest ocean on Earth?,Pacific Ocean,Atlantic Ocean,Indian Ocean,Arctic Ocean,Pacific Ocean
+Who painted the Mona Lisa?,Leonardo da Vinci,Vincent van Gogh,Pablo Picasso,Claude Monet,Leonardo da Vinci
+What is the chemical symbol for water?,H2O,CO2,O2,NaCl,H2O
+What is the longest river in the world?,Nile River,Amazon River,Yangtze River,Mississippi River,Nile River
+Which animal is known as the "King of the Jungle"?,Lion,Tiger,Elephant,Bear,Lion
+What is the primary gas that makes up the Earth's atmosphere?,Nitrogen,Oxygen,Carbon Dioxide,Argon,Nitrogen
+How many continents are there in the world?,Seven,Five,Six,Eight,Seven
+What is the hottest planet in our solar system?,Venus,Mars,Jupiter,Mercury,Venus
