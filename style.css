@@ -1,0 +1,146 @@
+/* style.css */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #e9eff5; /* Light blue-gray background */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align to the top */
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 700px;
+    width: 100%;
+    margin-top: 30px; /* Space from the top */
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    border: 1px solid #ddd;
+}
+
+h1, h2, h3 {
+    color: #0056b3;
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+h3 {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #555;
+}
+
+select#quizDatabases {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    font-size: 1em;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+}
+
+button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px; /* Consistent spacing */
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+button:hover:not(:disabled) {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+
+button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.option-button {
+    background-color: #eaf2f8; /* Lighter blue for options */
+    color: #333;
+    border: 1px solid #cce0f0;
+    font-weight: normal;
+    text-align: left;
+    padding: 15px;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.option-button:hover:not(:disabled) {
+    background-color: #dbe9f5;
+    border-color: #aaccdd;
+}
+
+#timer {
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: right;
+    color: #007bff;
+}
+
+#questionNumber {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #666;
+}
+
+#optionsContainer {
+    margin-top: 25px;
+}
+
+#optionsContainer .option-button {
+    margin-bottom: 10px; /* Space between option buttons */
+}
+
+#resultContainer p {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+}
+
+#resultContainer span {
+    font-weight: bold;
+    color: #007bff;
+}
+
+.reset-button {
+    background-color: #dc3545; /* Red for reset button */
+}
+
+.reset-button:hover:not(:disabled) {
+    background-color: #c82333;
+}
+
+#remainingQuestions {
+    font-size: 0.95em;
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
+}
