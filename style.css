@@ -51,7 +51,7 @@ select#quizDatabases {
     font-size: 1em;
     box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
     /* Make sure the select box is not covered */
-    position: relative; 
+    position: relative;
     z-index: 1; /* Ensure it's above other potential elements */
 }
 
@@ -193,4 +193,13 @@ button:disabled {
 
 #clearLoadedFileBtn:hover:not(:disabled) {
     background-color: #5a6268; /* Darker grey on hover */
+}
+
+/* Styles for Export/Import Sections */
+.export-data-section {
+    /* Styles for the export section */
+}
+
+.import-data-section {
+    /* Styles for the import section */
 }
