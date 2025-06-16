@@ -30,7 +30,7 @@ const exportDataBtn = document.getElementById('exportDataBtn');
 const importDataFile = document.getElementById('importDataFile');
 const importDataBtn = document.getElementById('importDataBtn');
 const clearLoadedFileBtn = document.getElementById('clearLoadedFileBtn');
-const dataManagementSection = document.querySelector('.data-management-section'); // <-- ADD THIS LINE
+const dataManagementSection = document.querySelector('.data-management-section');
 
 
 // --- Utility Functions ---
@@ -420,6 +420,9 @@ clearLoadedFileBtn.addEventListener('click', () => {
 
 // Initial setup when the entire DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
+    // Ensure the data management section is visible on initial load
+    dataManagementSection.style.display = 'block'; // <-- ADD THIS LINE
+
     // Load existing learning data from localStorage on startup
     loadCorrectQuestionsTracker();
 
