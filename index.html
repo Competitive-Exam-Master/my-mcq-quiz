@@ -59,7 +59,17 @@
             </div>
         </div>
         </div>
-
+if ('caches' in window) {
+      caches.keys().then(function(names) {
+        names.forEach(name => caches.delete(name));
+        console.log('Cleared service worker caches.');
+      }).catch(err => console.error('Error clearing caches:', err));
+    }
+    // This will cause a full page reload, potentially bypassing more cache
+    // It should be at the very end of the body, or carefully managed.
+    // Be aware this causes a reload *every time* the page is visited/refreshed.
+    // If you only want it for development, remove it for production.
+    // window.location.reload(true);
     <script src="script.js"></script>
 </body>
 </html>
