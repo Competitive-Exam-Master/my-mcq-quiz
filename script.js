@@ -61,7 +61,7 @@ async function getQuizDatabaseList() {
 // Fetches and parses a single question CSV file
 async function fetchQuestions(csvFileName) {
     try {
-        const response = await fetch(csvFileName);
+       const response = await fetch(`quizzes/${notesFileName}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
