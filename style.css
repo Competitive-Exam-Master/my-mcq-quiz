@@ -144,3 +144,50 @@ button:disabled {
     margin-top: 10px;
     text-align: center;
 }
+
+/* NEW STYLES FOR DATA MANAGEMENT SECTION */
+.data-management-section {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px dashed #ccc;
+}
+
+.data-management-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.6em;
+}
+
+.data-management-section h3 {
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    text-align: left;
+    color: #444;
+}
+
+#importDataFile {
+    width: calc(100% - 22px); /* Adjust for padding and border */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    font-size: 1em;
+}
+
+#importDataBtn, #clearLoadedFileBtn {
+    background-color: #28a745; /* Green for import */
+    margin-top: 5px; /* Space between file input and button */
+}
+
+#importDataBtn:hover:not(:disabled) {
+    background-color: #218838;
+}
+
+#clearLoadedFileBtn {
+    background-color: #6c757d; /* Grey for clear */
+}
+
+#clearLoadedFileBtn:hover:not(:disabled) {
+    background-color: #5a6268;
+}
