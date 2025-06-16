@@ -42,14 +42,18 @@
             <h2>Manage Learning Data</h2>
             <p>You can save your learning progress to a file and load it later, or on another device.</p>
 
-            <h3>Export Data</h3>
-            <button id="exportDataBtn">Download My Progress</button>
+            <div class="export-data-section">
+                <h3>Export Data</h3>
+                <button id="exportDataBtn">Download My Progress</button>
+            </div>
 
-            <h3>Import Data</h3>
-            <p>Select a previously downloaded progress file:</p>
-            <input type="file" id="importDataFile" accept=".json">
-            <button id="importDataBtn" style="display:none;">Upload and Load Progress</button>
-            <button id="clearLoadedFileBtn" style="display:none;">Clear Selected File</button>
+            <div class="import-data-section">
+                <h3>Import Data</h3>
+                <p>Select a previously downloaded progress file:</p>
+                <input type="file" id="importDataFile" accept=".json">
+                <button id="importDataBtn" style="display:none;">Upload and Load Progress</button>
+                <button id="clearLoadedFileBtn" style="display:none;">Clear Selected File</button>
+            </div>
         </div>
         </div>
 
