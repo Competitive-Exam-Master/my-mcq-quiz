@@ -31,6 +31,8 @@ const importDataFile = document.getElementById('importDataFile');
 const importDataBtn = document.getElementById('importDataBtn');
 const clearLoadedFileBtn = document.getElementById('clearLoadedFileBtn');
 const dataManagementSection = document.querySelector('.data-management-section');
+const exportDataSection = document.querySelector('.export-data-section'); // Add this line
+const importDataSection = document.querySelector('.import-data-section'); // Add this line
 
 
 // --- Utility Functions ---
@@ -336,6 +338,8 @@ function showResults() {
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'block';
     dataManagementSection.style.display = 'block'; // <-- SHOW AT END OF QUIZ
+    exportDataSection.style.display = 'block'; // Show export
+    importDataSection.style.display = 'none';  // Hide import
 
     // Update result display
     correctCountSpan.textContent = score;
@@ -353,6 +357,8 @@ function resetQuiz() {
     // Show selector and data management, hide quiz and results
     quizSelectorForm.style.display = 'block';
     dataManagementSection.style.display = 'block'; // <-- SHOW ON SELECTOR SCREEN
+    exportDataSection.style.display = 'none';  // Hide export
+    importDataSection.style.display = 'block'; // Show import
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'none';
     stopTimer(); // Clear any active timer
@@ -421,7 +427,9 @@ clearLoadedFileBtn.addEventListener('click', () => {
 // Initial setup when the entire DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     // Ensure the data management section is visible on initial load
-    dataManagementSection.style.display = 'block'; // <-- ADD THIS LINE
+    dataManagementSection.style.display = 'block';
+    exportDataSection.style.display = 'none';  // Hide export initially
+    importDataSection.style.display = 'block'; // Show import initially
 
     // Load existing learning data from localStorage on startup
     loadCorrectQuestionsTracker();
