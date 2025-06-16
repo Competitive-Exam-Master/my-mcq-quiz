@@ -59,6 +59,7 @@
             </div>
         </div>
         </div>
+<script>
 if ('caches' in window) {
       caches.keys().then(function(names) {
         names.forEach(name => caches.delete(name));
@@ -70,6 +71,7 @@ if ('caches' in window) {
     // Be aware this causes a reload *every time* the page is visited/refreshed.
     // If you only want it for development, remove it for production.
     // window.location.reload(true);
+</script>
     <script src="script.js"></script>
 </body>
 </html>
