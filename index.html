@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>GitHub Quiz</h1>
+
+        <form id="quizSelectorForm">
+            <h2>Select Quizzes</h2>
+            <label for="quizDatabases">Choose quiz databases (multiple selection allowed):</label>
+            <select id="quizDatabases" multiple size="5">
+                </select>
+            <button type="submit">Start Quiz</button>
+            <p id="remainingQuestions" style="margin-top: 15px; font-style: italic;"></p>
+        </form>
+
+        <div id="quizContainer" style="display:none;">
+            <div id="timer">Time: 00:00</div>
+            <div id="questionNumber"></div>
+            <h3 id="questionText"></h3>
+            <div id="optionsContainer">
+                </div>
+            <button id="nextQuestionBtn" style="display:none;">Next Question</button>
+        </div>
+
+        <div id="resultContainer" style="display:none;">
+            <h2>Quiz Results</h2>
+            <p>Correct Answers: <span id="correctCount"></span></p>
+            <p>Wrong Answers: <span id="wrongCount"></span></p>
+            <p>Total Questions: <span id="totalCount"></span></p>
+            <p>Time Taken: <span id="timeTaken"></span></p>
+            <button id="restartQuizBtn">Start New Quiz</button>
+            <button id="resetLearningBtn" class="reset-button">Reset Learning Progress</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
