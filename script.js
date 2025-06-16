@@ -18,7 +18,7 @@ const questionTextDisplay = document.getElementById('questionText');
 const optionsContainer = document.getElementById('optionsContainer');
 const nextQuestionBtn = document.getElementById('nextQuestionBtn');
 const correctCountSpan = document.getElementById('correctCount');
-const wrongCountSpan = document = document.getElementById('wrongCount');
+const wrongCountSpan = document.getElementById('wrongCount');
 const totalCountSpan = document.getElementById('totalCount');
 const timeTakenSpan = document.getElementById('timeTaken');
 const restartQuizBtn = document.getElementById('restartQuizBtn');
@@ -30,6 +30,7 @@ const exportDataBtn = document.getElementById('exportDataBtn');
 const importDataFile = document.getElementById('importDataFile');
 const importDataBtn = document.getElementById('importDataBtn');
 const clearLoadedFileBtn = document.getElementById('clearLoadedFileBtn');
+const dataManagementSection = document.querySelector('.data-management-section'); // <-- ADD THIS LINE
 
 
 // --- Utility Functions ---
@@ -314,10 +315,11 @@ async function startQuiz(selectedDatabases) {
     startTime = Date.now(); // Record start time for timer
     startTimer(); // Begin the quiz timer
 
-    // Hide the selector form and show the quiz container
+    // Hide the selector form, the data management section, and ensure results are hidden
     quizSelectorForm.style.display = 'none';
+    dataManagementSection.style.display = 'none'; // <-- HIDE DURING QUIZ
     quizContainer.style.display = 'block';
-    resultContainer.style.display = 'none'; // Ensure results are hidden
+    resultContainer.style.display = 'none';
 
     displayQuestion(); // Display the first question
 }
@@ -330,9 +332,10 @@ function showResults() {
     const minutes = Math.floor(totalTimeTaken / 60000);
     const seconds = Math.floor((totalTimeTaken % 60000) / 1000);
 
-    // Hide quiz container and show results container
+    // Hide quiz container and show results container AND data management section
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'block';
+    dataManagementSection.style.display = 'block'; // <-- SHOW AT END OF QUIZ
 
     // Update result display
     correctCountSpan.textContent = score;
@@ -347,8 +350,9 @@ function showResults() {
 
 // Resets the quiz state and returns to the database selection screen
 function resetQuiz() {
-    // Show selector, hide quiz and results
+    // Show selector and data management, hide quiz and results
     quizSelectorForm.style.display = 'block';
+    dataManagementSection.style.display = 'block'; // <-- SHOW ON SELECTOR SCREEN
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'none';
     stopTimer(); // Clear any active timer
