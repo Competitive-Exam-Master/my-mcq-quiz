@@ -7,7 +7,7 @@ let timerInterval;
 let startTime;
 let correctQuestionsTracker = {}; // Stores correctly answered questions by unique ID
 
-// HTML Element references
+// HTML Element references (for existing quiz components)
 const selectElement = document.getElementById('quizDatabases');
 const quizSelectorForm = document.getElementById('quizSelectorForm');
 const quizContainer = document.getElementById('quizContainer');
@@ -18,14 +18,14 @@ const questionTextDisplay = document.getElementById('questionText');
 const optionsContainer = document.getElementById('optionsContainer');
 const nextQuestionBtn = document.getElementById('nextQuestionBtn');
 const correctCountSpan = document.getElementById('correctCount');
-const wrongCountSpan = document.getElementById('wrongCount');
+const wrongCountSpan = document = document.getElementById('wrongCount');
 const totalCountSpan = document.getElementById('totalCount');
 const timeTakenSpan = document.getElementById('timeTaken');
 const restartQuizBtn = document.getElementById('restartQuizBtn');
 const resetLearningBtn = document.getElementById('resetLearningBtn');
 const remainingQuestionsSpan = document.getElementById('remainingQuestions');
 
-// NEW HTML Element references for data management
+// NEW HTML Element references (for data management features)
 const exportDataBtn = document.getElementById('exportDataBtn');
 const importDataFile = document.getElementById('importDataFile');
 const importDataBtn = document.getElementById('importDataBtn');
@@ -34,21 +34,23 @@ const clearLoadedFileBtn = document.getElementById('clearLoadedFileBtn');
 
 // --- Utility Functions ---
 
-// Fetches and parses the quiz_databases.csv file
+// Fetches and parses the quiz_databases.csv file to get available quiz names
 async function getQuizDatabaseList() {
     try {
         const response = await fetch('quiz_databases.csv');
         if (!response.ok) {
+            // If the file is not found or other HTTP error occurs
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const text = await response.text();
+        // Split by new line, trim whitespace, and filter out empty lines
         const databaseNames = text.split('\n')
                                   .map(name => name.trim())
                                   .filter(name => name !== '');
         return databaseNames;
     } catch (error) {
         console.error("Error fetching quiz_databases.csv:", error);
-        alert("Could not load quiz database list. Please check quiz_databases.csv.");
+        alert("Could not load quiz database list. Please ensure 'quiz_databases.csv' is in the root directory and accessible.");
         return [];
     }
 }
@@ -64,16 +66,17 @@ async function fetchQuestions(csvFileName) {
         const lines = text.split('\n').filter(line => line.trim() !== '');
         const questions = lines.map(line => {
             const parts = line.split(',');
+            // Ensure there are enough parts for question, 4 options, and correct answer
             if (parts.length < 6) {
                 console.warn(`Skipping malformed line in ${csvFileName}: ${line}`);
-                return null;
+                return null; // Return null for malformed lines
             }
             return {
                 questionText: parts[0].trim(),
                 options: [parts[1].trim(), parts[2].trim(), parts[3].trim(), parts[4].trim()],
                 correctAnswer: parts[5].trim()
             };
-        }).filter(q => q !== null); // Filter out any null entries from malformed lines
+        }).filter(q => q !== null); // Filter out any null entries
         return questions;
     } catch (error) {
         console.error(`Error fetching ${csvFileName}:`, error);
@@ -82,7 +85,7 @@ async function fetchQuestions(csvFileName) {
     }
 }
 
-// Loads all questions from the selected CSV databases
+// Loads questions from all selected CSV databases
 async function loadAllSelectedQuestions(selectedDatabases) {
     let allQuestions = [];
     for (const db of selectedDatabases) {
@@ -103,7 +106,7 @@ function shuffleArray(array) {
 
 // Starts the quiz timer
 function startTimer() {
-    clearInterval(timerInterval); // Clear any existing timer
+    clearInterval(timerInterval); // Clear any existing timer to prevent multiple timers
     timerInterval = setInterval(() => {
         const elapsedTime = Date.now() - startTime;
         const minutes = Math.floor(elapsedTime / 60000);
@@ -117,7 +120,7 @@ function stopTimer() {
     clearInterval(timerInterval);
 }
 
-// THIS IS THE DEFINITION OF THE FUNCTION
+// Loads the correctly answered questions tracker from localStorage
 function loadCorrectQuestionsTracker() {
     const storedData = localStorage.getItem('correctlyAnsweredQuestions');
     if (storedData) {
@@ -125,11 +128,11 @@ function loadCorrectQuestionsTracker() {
             correctQuestionsTracker = JSON.parse(storedData);
         } catch (e) {
             console.error("Error parsing stored tracker, resetting:", e);
-            correctQuestionsTracker = {}; // Reset if corrupted
-            localStorage.removeItem('correctlyAnsweredQuestions');
+            correctQuestionsTracker = {}; // Reset if data is corrupted
+            localStorage.removeItem('correctlyAnsweredQuestions'); // Clear corrupted data
         }
     } else {
-        correctQuestionsTracker = {};
+        correctQuestionsTracker = {}; // Initialize as empty if no data exists
     }
 }
 
@@ -147,8 +150,8 @@ async function displayRemainingQuestionsCount(selectedDatabases) {
     const allQuestionsInSelectedDBs = await loadAllSelectedQuestions(selectedDatabases);
     let correctlyAnsweredCount = 0;
     allQuestionsInSelectedDBs.forEach(q => {
-        const questionId = `${q.questionText}-${q.correctAnswer}`; // Unique ID for question
-        if (correctQuestionsTracker[questionId] === true) { // Explicitly check for true
+        const questionId = `${q.questionText}-${q.correctAnswer}`; // Create a unique ID for the question
+        if (correctQuestionsTracker[questionId] === true) { // Check if this specific question was marked true (correct)
             correctlyAnsweredCount++;
         }
     });
@@ -157,50 +160,57 @@ async function displayRemainingQuestionsCount(selectedDatabases) {
     remainingQuestionsSpan.textContent = `Questions remaining: ${remainingCount} out of ${allQuestionsInSelectedDBs.length}`;
 }
 
-// Function to download data as a JSON file with date + time filename
+// --- Data Management Functions ---
+
+// Function to download the current learning data as a JSON file
 function downloadLearningData() {
-    const dataStr = JSON.stringify(correctQuestionsTracker, null, 2); // Pretty print JSON
+    // Stringify the tracker object to JSON, with 2 spaces for pretty printing
+    const dataStr = JSON.stringify(correctQuestionsTracker, null, 2);
+    // Create a Blob object from the JSON string
     const blob = new Blob([dataStr], { type: 'application/json' });
+    // Create a URL for the Blob
     const url = URL.createObjectURL(blob);
 
-    // Generate date and time string for the filename
+    // Generate a timestamped filename (YYYY-MM-DD_HH-MM-SS)
     const now = new Date();
-    // Format: YYYY-MM-DD_HH-MM-SS (e.g., 2025-06-16_07-30-00)
     const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed (0-11)
     const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const seconds = String(now.getSeconds()).padStart(2, '0');
-
     const filename = `quiz_progress_${year}-${month}-${day}_${hours}-${minutes}-${seconds}.json`;
 
+    // Create a temporary anchor (<a>) element to trigger the download
     const a = document.createElement('a');
     a.href = url;
-    a.download = filename; // Use the generated filename
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url); // Clean up
+    a.download = filename; // Set the download filename
+    document.body.appendChild(a); // Append to body (required for Firefox)
+    a.click(); // Programmatically click the anchor to start download
+    document.body.removeChild(a); // Remove the temporary anchor
+    URL.revokeObjectURL(url); // Release the object URL
     alert(`Your learning progress has been downloaded as "${filename}"`);
 }
 
-// Function to load data from an uploaded JSON file
+// Function to load learning data from an uploaded JSON file
 function loadLearningDataFromFile(file) {
-    const reader = new FileReader();
+    const reader = new FileReader(); // Create a new FileReader object
 
     reader.onload = function(event) {
         try {
+            // Parse the content of the file as JSON
             const loadedData = JSON.parse(event.target.result);
-            correctQuestionsTracker = loadedData; // Replace existing data
-            saveCorrectQuestionsTracker(); // Save to localStorage immediately
+            // Replace the current tracker with the loaded data
+            correctQuestionsTracker = loadedData;
+            saveCorrectQuestionsTracker(); // Immediately save to localStorage
+
             alert('Learning progress successfully loaded from file! The page will reset to apply changes.');
-            resetQuiz(); // Return to selector and update counts
+            resetQuiz(); // Go back to the selector and update remaining question counts
         } catch (e) {
             console.error("Error parsing JSON file:", e);
             alert("Error loading file. Please make sure it's a valid JSON progress file.");
         } finally {
-            // Reset file input after processing
+            // Clear the file input and hide buttons regardless of success/failure
             importDataFile.value = '';
             importDataBtn.style.display = 'none';
             clearLoadedFileBtn.style.display = 'none';
@@ -209,13 +219,13 @@ function loadLearningDataFromFile(file) {
 
     reader.onerror = function() {
         alert("Failed to read the file.");
-        // Reset file input
+        // Clear the file input and hide buttons on error
         importDataFile.value = '';
         importDataBtn.style.display = 'none';
         clearLoadedFileBtn.style.display = 'none';
     };
 
-    reader.readAsText(file);
+    reader.readAsText(file); // Read the file content as text
 }
 
 
@@ -223,151 +233,160 @@ function loadLearningDataFromFile(file) {
 
 // Displays the current question and its options
 function displayQuestion() {
+    // Check if there are more questions to display
     if (questionIndex < currentQuizQuestions.length) {
         const question = currentQuizQuestions[questionIndex];
         questionNumberDisplay.textContent = `Question ${questionIndex + 1}/${currentQuizQuestions.length}`;
         questionTextDisplay.textContent = question.questionText;
         optionsContainer.innerHTML = ''; // Clear previous options
 
-        const shuffledOptions = shuffleArray([...question.options]); // Shuffle a copy
+        // Shuffle a copy of the options array before displaying
+        const shuffledOptions = shuffleArray([...question.options]);
         shuffledOptions.forEach(option => {
             const button = document.createElement('button');
             button.textContent = option;
             button.classList.add('option-button');
-            button.onclick = () => checkAnswer(option, question, button); // Pass button reference
+            // Attach a click handler that calls checkAnswer with the option and button reference
+            button.onclick = () => checkAnswer(option, question, button);
             optionsContainer.appendChild(button);
         });
 
-        nextQuestionBtn.style.display = 'none'; // Hide next button until answer is selected
-        Array.from(optionsContainer.children).forEach(btn => btn.disabled = false); // Enable all option buttons
+        nextQuestionBtn.style.display = 'none'; // Hide "Next Question" button until an answer is selected
+        // Re-enable all option buttons for the new question
+        Array.from(optionsContainer.children).forEach(btn => btn.disabled = false);
     } else {
-        showResults();
+        showResults(); // If no more questions, show results
     }
 }
 
 // Checks the selected answer against the correct answer
 function checkAnswer(selectedOption, question, selectedButton) {
-    // Disable all option buttons after selection
+    // Disable all option buttons to prevent multiple selections
     Array.from(optionsContainer.children).forEach(btn => btn.disabled = true);
 
-    const questionId = `${question.questionText}-${question.correctAnswer}`;
+    const questionId = `${question.questionText}-${question.correctAnswer}`; // Unique ID for tracking
 
     if (selectedOption === question.correctAnswer) {
         score++;
-        correctQuestionsTracker[questionId] = true; // Mark as correct
-        selectedButton.style.backgroundColor = 'lightgreen';
-        selectedButton.style.color = '#333'; // Adjust text color for visibility
+        correctQuestionsTracker[questionId] = true; // Mark question as correctly answered
+        selectedButton.style.backgroundColor = 'lightgreen'; // Highlight correct selection
+        selectedButton.style.color = '#333';
     } else {
-        correctQuestionsTracker[questionId] = false; // Mark as incorrect
-        selectedButton.style.backgroundColor = 'lightcoral';
-        selectedButton.style.color = '#333'; // Adjust text color for visibility
-        // Highlight the correct answer
+        correctQuestionsTracker[questionId] = false; // Mark question as incorrectly answered
+        selectedButton.style.backgroundColor = 'lightcoral'; // Highlight incorrect selection
+        selectedButton.style.color = '#333';
+        // Also highlight the actual correct answer
         const correctOptionButton = Array.from(optionsContainer.children).find(btn => btn.textContent === question.correctAnswer);
         if (correctOptionButton) {
             correctOptionButton.style.backgroundColor = 'lightgreen';
             correctOptionButton.style.color = '#333';
         }
     }
-    saveCorrectQuestionsTracker(); // Persist the updated tracker
+    saveCorrectQuestionsTracker(); // Persist the updated tracker to localStorage
 
-    nextQuestionBtn.style.display = 'block'; // Show next button
+    nextQuestionBtn.style.display = 'block'; // Show "Next Question" button
 }
 
-// Starts the quiz with selected databases
+// Initiates the quiz with selected databases
 async function startQuiz(selectedDatabases) {
     const allQuestions = await loadAllSelectedQuestions(selectedDatabases);
 
-    // Filter out questions previously answered correctly
+    // Filter out questions that have been previously answered correctly
     const unansweredQuestions = allQuestions.filter(q => {
         const questionId = `${q.questionText}-${q.correctAnswer}`;
-        return correctQuestionsTracker[questionId] !== true; // Only include if NOT true
+        return correctQuestionsTracker[questionId] !== true; // Only include if NOT marked as true
     });
 
-    // Shuffle and select up to 10 questions
+    // Shuffle the unanswered questions and take up to 10 for the current quiz session
     const questionsToUse = unansweredQuestions.length >= 10
         ? shuffleArray(unansweredQuestions).slice(0, 10)
         : shuffleArray(unansweredQuestions);
 
     if (questionsToUse.length === 0) {
-        alert("No new questions available in the selected databases! Try resetting your learning progress or selecting more quizzes.");
-        resetQuiz(); // Go back to selector
+        alert("No new questions available in the selected quizzes! Try resetting your learning progress or selecting more quizzes.");
+        resetQuiz(); // Go back to the selector
         return;
     }
 
     currentQuizQuestions = questionsToUse;
     questionIndex = 0;
     score = 0;
-    startTime = Date.now();
-    startTimer();
+    startTime = Date.now(); // Record start time for timer
+    startTimer(); // Begin the quiz timer
 
+    // Hide the selector form and show the quiz container
     quizSelectorForm.style.display = 'none';
     quizContainer.style.display = 'block';
     resultContainer.style.display = 'none'; // Ensure results are hidden
 
-    displayQuestion();
+    displayQuestion(); // Display the first question
 }
 
-// Shows the quiz results
+// Displays the quiz results
 function showResults() {
-    stopTimer();
+    stopTimer(); // Stop the timer when quiz ends
     const endTime = Date.now();
     const totalTimeTaken = endTime - startTime;
     const minutes = Math.floor(totalTimeTaken / 60000);
     const seconds = Math.floor((totalTimeTaken % 60000) / 1000);
 
+    // Hide quiz container and show results container
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'block';
 
+    // Update result display
     correctCountSpan.textContent = score;
     wrongCountSpan.textContent = currentQuizQuestions.length - score;
     totalCountSpan.textContent = currentQuizQuestions.length;
     timeTakenSpan.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
-    // Update remaining questions count after quiz, based on currently selected databases
+    // Update the "questions remaining" count on the selector page based on currently selected databases
     const selectedDatabasesForDisplay = Array.from(selectElement.selectedOptions).map(option => option.value);
     displayRemainingQuestionsCount(selectedDatabasesForDisplay);
 }
 
-// Resets the quiz state and returns to the selector screen
+// Resets the quiz state and returns to the database selection screen
 function resetQuiz() {
+    // Show selector, hide quiz and results
     quizSelectorForm.style.display = 'block';
     quizContainer.style.display = 'none';
     resultContainer.style.display = 'none';
     stopTimer(); // Clear any active timer
 
-    // Update remaining questions count on selector page based on current selection
+    // Update the "questions remaining" count on the selector page based on current selection
     const selectedDatabasesForDisplay = Array.from(selectElement.selectedOptions).map(option => option.value);
     displayRemainingQuestionsCount(selectedDatabasesForDisplay);
 }
 
 // --- Event Listeners and Initial Setup ---
 
-// Event listener for the "Next Question" button
+// "Next Question" button click handler
 nextQuestionBtn.addEventListener('click', () => {
     questionIndex++;
     displayQuestion();
 });
 
-// Event listener for the "Start New Quiz" button in results
+// "Start New Quiz" button in results screen click handler
 restartQuizBtn.addEventListener('click', () => {
     resetQuiz();
 });
 
-// Event listener for the "Reset Learning Progress" button in results
+// "Reset Learning Progress" button click handler
 resetLearningBtn.addEventListener('click', () => {
     if (confirm("Are you sure you want to reset your learning progress? This cannot be undone.")) {
-        localStorage.removeItem('correctlyAnsweredQuestions');
+        localStorage.removeItem('correctlyAnsweredQuestions'); // Clear data from localStorage
         correctQuestionsTracker = {}; // Clear in-memory tracker
         alert("Learning progress has been reset! The page will reset to apply changes.");
-        resetQuiz();
+        resetQuiz(); // Reset UI and update counts
     }
 });
 
-// Event listener for Export Data button
+// Event listener for the "Download My Progress" button
 exportDataBtn.addEventListener('click', downloadLearningData);
 
-// Event listener for file selection
+// Event listener for when a file is selected in the import input
 importDataFile.addEventListener('change', () => {
+    // Show/hide the "Upload" and "Clear" buttons based on whether a file is selected
     if (importDataFile.files.length > 0) {
         importDataBtn.style.display = 'block';
         clearLoadedFileBtn.style.display = 'block';
@@ -377,51 +396,53 @@ importDataFile.addEventListener('change', () => {
     }
 });
 
-// Event listener for Import Data button
+// Event listener for the "Upload and Load Progress" button
 importDataBtn.addEventListener('click', () => {
     if (importDataFile.files.length > 0) {
-        loadLearningDataFromFile(importDataFile.files[0]);
+        loadLearningDataFromFile(importDataFile.files[0]); // Pass the selected file
     } else {
         alert("Please select a file to upload.");
     }
 });
 
-// Event listener for Clear Loaded File button
+// Event listener for the "Clear Selected File" button
 clearLoadedFileBtn.addEventListener('click', () => {
-    importDataFile.value = ''; // Clear selected file
+    importDataFile.value = ''; // Clear the file input's value
     importDataBtn.style.display = 'none';
     clearLoadedFileBtn.style.display = 'none';
     alert("Selected file cleared from input.");
 });
 
 
-// THIS IS THE ONLY PLACE loadCorrectQuestionsTracker() IS CALLED INITIALLY
+// Initial setup when the entire DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
-    loadCorrectQuestionsTracker(); // This function loads data from localStorage
+    // Load existing learning data from localStorage on startup
+    loadCorrectQuestionsTracker();
 
-    // Populate the quiz database selector
+    // Populate the quiz database selector dropdown
     const databaseNames = await getQuizDatabaseList();
     databaseNames.forEach(name => {
         const option = document.createElement('option');
         option.value = name;
-        option.textContent = name.replace('.csv', '').replace(/_/g, ' '); // Nicer display name
+        // Display a user-friendly name (e.g., "math_quiz.csv" becomes "math quiz")
+        option.textContent = name.replace('.csv', '').replace(/_/g, ' ');
         selectElement.appendChild(option);
     });
 
-    // Handle form submission to start the quiz
+    // Handle the submission of the quiz selection form
     quizSelectorForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        const selectedOptions = Array.from(selectElement.selectedOptions);
-        const selectedDatabases = selectedOptions.map(option => option.value);
+        event.preventDefault(); // Prevent default form submission behavior (page reload)
+        const selectedOptions = Array.from(selectElement.selectedOptions); // Get selected options
+        const selectedDatabases = selectedOptions.map(option => option.value); // Extract their values (filenames)
 
         if (selectedDatabases.length > 0) {
-            startQuiz(selectedDatabases);
+            startQuiz(selectedDatabases); // Start the quiz with selected databases
         } else {
-            alert('Please select at least one quiz database.');
+            alert('Please select at least one quiz database to start.');
         }
     });
 
-    // Update remaining questions count when selection changes
+    // Update the "questions remaining" count whenever the database selection changes
     selectElement.addEventListener('change', () => {
         const selectedDatabases = Array.from(selectElement.selectedOptions).map(option => option.value);
         if (selectedDatabases.length > 0) {
@@ -431,6 +452,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
-    // Initial display of remaining questions based on no selection (or default)
+    // Initial message for "questions remaining" when no databases are selected yet
     remainingQuestionsSpan.textContent = 'Select quizzes to see remaining questions.';
 });
